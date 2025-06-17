@@ -579,26 +579,18 @@
                     <a href="#"><i class="fab fa-dribbble"></i></a>
                 </div>
             </div>
-            <form action="https://formspree.io/f/xdknvgqp"
-  method="POST"
->
+            <form id="contactForm">
                 <h3>Send Me a Message</h3>
                 <div class="form-group">
-                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="text" id="name" placeholder="Your Name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="email" placeholder="Your Email" required>
+                    <input type="email" id="email" placeholder="Your Email" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="subject" placeholder="Subject">
+                    <textarea id="message" placeholder="Your Message" required></textarea>
                 </div>
-                <div class="form-group">
-                    <textarea name="message" placeholder="Your Message" required></textarea>
-                </div>
-                <input type="hidden" name="_subject" value="New portfolio contact message">
-                <input type="text" name="_honey" style="display:none">
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_next" value="thank-you.html">
+                <div id="form-status" class="form-status"></div>
                 <button type="submit" class="btn primary">Send Message</button>
             </form>
         </div>
@@ -616,6 +608,20 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <!-- Chart.js for analytics charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Supabase Client -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Make supabase available in the global scope
+        window.supabase = supabase;
+        
+        // Check if Supabase loaded correctly
+        if (typeof supabase === 'undefined') {
+            console.error('Supabase library not loaded properly!');
+        } else {
+            console.log('Supabase library loaded successfully');
+        }
+    </script>
+    <script src="config.js"></script>
     <script src="script.js"></script>
     <script>
         // Fallback to ensure skill bars are visible

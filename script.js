@@ -964,4 +964,91 @@ document.addEventListener('DOMContentLoaded', function() {
         stagger: 0.1,
         ease: 'power3.out'
     });
+
+    // Supabase Contact Form
+    function initContactForm() {
+        // Get contact form elements
+        const contactForm = document.getElementById('contactForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const messageInput = document.getElementById('message');
+        const formStatus = document.getElementById('form-status');
+        
+        if (contactForm && window.supabase) {
+            console.log('Initializing Supabase client with:', {
+                url: window.SUPABASE_URL,
+                key: window.SUPABASE_ANON_KEY ? 'Key available' : 'Key missing'
+            });
+            
+            const supabaseClient = window.supabase.createClient(
+                window.SUPABASE_URL,
+                window.SUPABASE_ANON_KEY
+            );
+            
+            if (!supabaseClient) {
+                console.error('Failed to initialize Supabase client');
+            }
+            
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+                
+                try {
+                    console.log('Sending message to Supabase:', {
+                        name: nameInput.value,
+                        email: emailInput.value,
+                        message: messageInput.value
+                    });
+                    
+                    // Insert data into Supabase
+                    const { data, error } = await supabaseClient
+                        .from('messages')
+                        .insert([
+                            { 
+                                name: nameInput.value, 
+                                email: emailInput.value, 
+                                message: messageInput.value 
+                            }
+                        ]);
+                    
+                    if (error) {
+                        console.error('Supabase error details:', error);
+                        throw error;
+                    }
+                    
+                    console.log('Message sent successfully:', data);
+                    
+                    // Show success message
+                    formStatus.textContent = 'Message sent successfully! Thank you for reaching out.';
+                    formStatus.className = 'form-status success';
+                    
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        formStatus.style.display = 'none';
+                    }, 5000);
+                    
+                } catch (error) {
+                    // Show error message
+                    formStatus.textContent = 'Failed to send message. Please try again later.';
+                    formStatus.className = 'form-status error';
+                    console.error('Error submitting form:', error);
+                } finally {
+                    // Restore button state
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    }
+    
+    // Initialize contact form
+    initContactForm();
 }); 
