@@ -75,3 +75,62 @@ Feel free to use this template for your personal portfolio.
 ---
 
 Created with ❤️ 
+
+# Portfolio Website with Supabase Integration
+
+This portfolio website includes a contact form that saves messages to a Supabase database and an admin panel to view them.
+
+## Troubleshooting Common Issues
+
+### Contact Form Not Working After Deployment
+
+If your contact form works locally but not after deploying to GitHub Pages or another hosting service:
+
+1. **Check CORS Configuration**:
+   - Open `cors.html` in your deployed site to test CORS configuration
+   - Add your website's domain to Supabase's allowed origins:
+     - Go to Supabase Dashboard → Project Settings → API → CORS
+     - Add `https://yourusername.github.io` (or your custom domain)
+     - Click "Save"
+
+2. **Check Browser Console**:
+   - Open Developer Tools (F12) and look for errors
+   - If you see "Uncaught ReferenceError: supabase is not defined", make sure script loading order is correct
+
+3. **Script Loading Issues**:
+   - Verify that `config.js` loads before `script.js`
+   - If using a CDN, ensure it's accessible and not blocked
+
+### Admin Panel Access Issues
+
+1. **Correct URL**:
+   - Use `/admin/index.html` (not `/index.html/admin`)
+   - Login only works with the email specified in `config.js`
+
+2. **Authentication**:
+   - If login fails, check browser console for errors
+   - Verify RLS policies are set up correctly in Supabase
+
+## Supabase Setup
+
+Make sure your Supabase project has:
+
+1. A `messages` table with columns:
+   - `id` (uuid, primary key)
+   - `name` (text)
+   - `email` (text)
+   - `message` (text)
+   - `created_at` (timestamp with time zone)
+
+2. RLS policies:
+   - Anonymous INSERT access
+   - Authenticated SELECT access
+
+## Local Development
+
+1. Clone the repository
+2. Open `index.html` in your browser (no server required)
+3. For testing the admin panel, use a local server:
+   ```
+   npx http-server
+   ``` 

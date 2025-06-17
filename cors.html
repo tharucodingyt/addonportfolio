@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supabase CORS Test</h1>
+    <p>This page tests if your Supabase project has CORS properly configured for this domain.</p>
+    
+    <button id="test-cors">Test CORS Configuration</button>
+    
+    <div id="result"></div>
+    
+    <h2>Instructions:</h2>
+    <ol>
+        <li>If you see a CORS error in the console, you need to add this website's URL to your Supabase project's CORS allowed origins.</li>
+        <li>Go to your Supabase dashboard → Project Settings → API → CORS.</li>
+        <li>Add <code id="current-url"></code> to the "Allowed origins" list.</li>
+        <li>Click "Save" and then try the test again.</li>
+    </ol>
+    
+    <script src="config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultDiv = document.getElementById('result');
+            const currentUrlElement = document.getElementById('current-url');
+            const testButton = document.getElementById('test-cors');
+            
+            // Display current URL
+            const currentUrl = window.location.origin;
+            currentUrlElement.textContent = currentUrl;
+            
+            testButton.addEventListener('click', async function() {
+                resultDiv.innerHTML = '<p>Testing CORS configuration...</p>';
+                
+                try {
+                    if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+                        throw new Error("Supabase configuration not found. Make sure config.js is loaded.");
+                    }
+                    
+                    const response = await fetch(`${window.SUPABASE_URL}/rest/v1/messages?select=count`, {
+                        method: 'HEAD',
+                        headers: {
+                            'apikey': window.SUPABASE_ANON_KEY,
+                            'Authorization': `Bearer ${window.SUPABASE_ANON_KEY}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        resultDiv.innerHTML = `
+                            <h3 style="color: green;">✅ CORS is properly configured!</h3>
+                            <p>Your application should work correctly from this domain.</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <h3 style="color: orange;">⚠️ Request failed, but not due to CORS</h3>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                            <p>This could be due to permissions or other issues, but CORS seems configured correctly.</p>
+                        `;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                        <h3 style="color: red;">❌ Error</h3>
+                        <p>${error.message}</p>
+                        <p>If this is a CORS error, you need to add this site's origin to your Supabase CORS settings.</p>
+                        <pre>${error.stack || 'No stack trace available'}</pre>
+                    `;
+                    console.error('CORS test error:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

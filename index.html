@@ -608,16 +608,28 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <!-- Chart.js for analytics charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <!-- Supabase Client -->
+    <!-- Supabase Client with fallback -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        // Make supabase available in the global scope
-        window.supabase = supabase;
-        
-        // Check if Supabase loaded correctly
+        // Fallback in case the CDN fails
         if (typeof supabase === 'undefined') {
-            console.error('Supabase library not loaded properly!');
+            console.error('Primary Supabase CDN failed. Trying alternative...');
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+            script.onload = function() {
+                console.log('Alternative Supabase CDN loaded successfully');
+                // Make supabase available in the global scope
+                if (typeof supabase !== 'undefined') {
+                    window.supabase = supabase;
+                }
+            };
+            script.onerror = function() {
+                console.error('All Supabase CDNs failed to load');
+            };
+            document.head.appendChild(script);
         } else {
+            // Make supabase available in the global scope
+            window.supabase = supabase;
             console.log('Supabase library loaded successfully');
         }
     </script>
