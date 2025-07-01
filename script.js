@@ -79,6 +79,15 @@ function enhanceNavbar() {
         
         // Add click event for active state
         link.addEventListener('click', function(e) {
+            const targetHref = this.getAttribute('href');
+            
+            // Handle admin navigation differently
+            if (targetHref === '/admin') {
+                // Don't prevent default - allow normal navigation
+                return;
+            }
+            
+            // For other links, prevent default and use smooth scroll
             e.preventDefault();
             
             // Remove active class from all links
@@ -88,15 +97,14 @@ function enhanceNavbar() {
             this.classList.add('active');
             
             // Smooth scroll to section
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
+            const targetSection = document.querySelector(targetHref);
             
             window.scrollTo({
                 top: targetSection.offsetTop - 80,
                 behavior: 'smooth'
             });
         });
-    });
+    });}
     
     // Highlight active section on scroll
     window.addEventListener('scroll', function() {
@@ -1147,4 +1155,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize contact form
     initContactForm();
-}); 
+});
