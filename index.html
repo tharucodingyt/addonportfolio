@@ -32,8 +32,6 @@
             <li><a href="#skills">Skills</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="/admin">Admin</a></li>
-            <li>
                 <div class="theme-toggle" id="theme-toggle">
                     <span class="toggle-icon sun"><i class="fas fa-sun"></i></span>
                     <span class="toggle-icon moon"><i class="fas fa-moon"></i></span>
@@ -580,19 +578,37 @@
                     <a href="#"><i class="fab fa-dribbble"></i></a>
                 </div>
             </div>
-            <form id="contactForm">
+            <!-- <form  action="https://formspree.io/f/xdknvgqp" method="POST"> -->
+                <form id="contactForm" action="https://getform.io/f/akkpgzja" method="POST">
                 <h3>Send Me a Message</h3>
+                
+                <!-- Formspree configuration -->
+                <input type="hidden" name="_subject" value="New Portfolio Contact Message" />
+                <input type="hidden" name="_cc" value="mrnirajbro@gmail.com" />
+                
                 <div class="form-group">
-                    <input type="text" id="name" placeholder="Your Name" required>
+                    <label for="name">Name *</label>
+                    <input type="text" name="name" id="name" placeholder="Your Name" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" id="email" placeholder="Your Email" required>
+                    <label for="email">Email *</label>
+                    <input type="email" name="email" id="email" placeholder="Your Email" required>
                 </div>
                 <div class="form-group">
-                    <textarea id="message" placeholder="Your Message" required></textarea>
+                    <label for="subject">Subject *</label>
+                    <input type="text" name="subject" id="subject" placeholder="Subject" required>
                 </div>
-                <div id="form-status" class="form-status"></div>
-                <button type="submit" class="btn primary">Send Message</button>
+                <div class="form-group">
+                    <label for="message">Message *</label>
+                    <textarea name="message" id="message" placeholder="Your Message" rows="5" required></textarea>
+                </div>
+                
+                <!-- Formspree honeypot field for spam protection -->
+                <input type="text" name="_gotcha" style="display:none" />
+                
+                <button type="submit" class="btn primary">
+                    Send Message <i class="fas fa-paper-plane"></i>
+                </button>
             </form>
         </div>
     </section>
@@ -607,34 +623,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <!-- Particles.js for background effect -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <!-- Chart.js for analytics charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    <!-- Supabase Client with fallback -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script>
-        // Fallback in case the CDN fails
-        if (typeof supabase === 'undefined') {
-            console.error('Primary Supabase CDN failed. Trying alternative...');
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-            script.onload = function() {
-                console.log('Alternative Supabase CDN loaded successfully');
-                // Make supabase available in the global scope
-                if (typeof supabase !== 'undefined') {
-                    window.supabase = supabase;
-                }
-            };
-            script.onerror = function() {
-                console.error('All Supabase CDNs failed to load');
-            };
-            document.head.appendChild(script);
-        } else {
-            // Make supabase available in the global scope
-            window.supabase = supabase;
-            console.log('Supabase library loaded successfully');
-        }
-    </script>
-    <script src="config.js"></script>
+    <!-- Contact form now uses Formspree.io - no additional scripts needed -->
     <script src="script.js"></script>
     <script>
         // Fallback to ensure skill bars are visible

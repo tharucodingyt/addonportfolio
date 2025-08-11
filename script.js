@@ -63,69 +63,50 @@ function animateThemeChange(theme) {
 function enhanceNavbar() {
     const navLinks = document.querySelectorAll('.nav-links a');
     const nav = document.querySelector('nav');
-    
+
     // Add hover effect for desktop
     navLinks.forEach(link => {
         link.addEventListener('mouseenter', () => {
-            // Create ripple effect
             const ripple = document.createElement('span');
             ripple.classList.add('nav-ripple');
             link.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
+            setTimeout(() => ripple.remove(), 600);
         });
-        
-        // Add click event for active state
+
+        // Add click event for active state and smooth scroll for hash links
         link.addEventListener('click', function(e) {
-            const targetHref = this.getAttribute('href');
-            
-            // Handle admin navigation differently
-            if (targetHref === '/admin') {
-                // Don't prevent default - allow normal navigation
-                return;
-            }
-            
-            // For other links, prevent default and use smooth scroll
+            const targetHref = this.getAttribute('href') || '';
+            // Allow normal navigation for non-hash links (e.g., admin/ or external)
+            if (!targetHref.startsWith('#')) return;
+
             e.preventDefault();
-            
             // Remove active class from all links
             navLinks.forEach(item => item.classList.remove('active'));
-            
             // Add active class to clicked link
             this.classList.add('active');
-            
             // Smooth scroll to section
             const targetSection = document.querySelector(targetHref);
-            
-            window.scrollTo({
-                top: targetSection.offsetTop - 80,
-                behavior: 'smooth'
-            });
+            if (targetSection) {
+                window.scrollTo({ top: targetSection.offsetTop - 80, behavior: 'smooth' });
+            }
         });
-    });}
-    
-    // Highlight active section on scroll
+    });
+
+    // Highlight active section on scroll + shrink nav
     window.addEventListener('scroll', function() {
         const scrollPosition = window.scrollY;
-        
-        // Shrink nav on scroll
         if (scrollPosition > 50) {
             nav.classList.add('scrolled');
         } else {
             nav.classList.remove('scrolled');
         }
-        
-        // Highlight active section
+
         const sections = document.querySelectorAll('section');
         sections.forEach(section => {
             const sectionTop = section.offsetTop - 200;
             const sectionBottom = sectionTop + section.offsetHeight;
-            
             if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
                 const id = section.getAttribute('id');
-                
                 navLinks.forEach(link => {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === `#${id}`) {
@@ -201,6 +182,9 @@ function initMobileMenu() {
 
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
+    // Note: Contact form now uses pure HTML submission to Formspree
+    // No JavaScript handling needed - Formspree handles everything
+    
     // Initialize theme toggle
     initThemeToggle();
     
@@ -375,61 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Smooth scrolling for navigation links
-    const navLinks = document.querySelectorAll('.nav-links a');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            window.scrollTo({
-                top: targetSection.offsetTop - 80,
-                behavior: 'smooth'
-            });
-        });
-    });
-    
-    // Highlight active navigation item on scroll
-    const sections = document.querySelectorAll('section');
-    
-    window.addEventListener('scroll', function() {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            
-            if (pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute('id');
-            }
-        });
-        
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
-        });
-        
-        // Shrink nav on scroll
-        const nav = document.querySelector('nav');
-        if (window.scrollY > 50) {
-            nav.classList.add('scrolled');
-        } else {
-            nav.classList.remove('scrolled');
-        }
-    });
-    
-    // Add 'active' class to navigation links when clicked
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            navLinks.forEach(item => item.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    // Note: Smooth scrolling and active state handled in enhanceNavbar()
     
     // Form submission (prevent default for demo)
     const contactForm = document.querySelector('.contact-form');

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Thank you for contacting me">
-    <title>Thank You | Your Name</title>
+    <meta name="description" content="Thank you for contacting Niraj Tharu">
+    <title>Thank You | Niraj Tharu</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,56 +16,178 @@
             align-items: center;
             text-align: center;
             padding: 2rem;
+            background: var(--hero-gradient);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .thank-you-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="50" cy="10" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="10" cy="60" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="90" cy="40" r="1" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+        
+        .thank-you-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            animation: slideInUp 0.8s ease;
         }
         
         .thank-you-icon {
-            font-size: 5rem;
+            font-size: 4rem;
             color: var(--primary-color);
-            margin-bottom: 2rem;
-            animation: pulse 2s infinite;
+            margin-bottom: 1.5rem;
+            animation: bounceIn 1s ease;
         }
         
-        .thank-you-container h1 {
-            font-size: 2.5rem;
+        .thank-you-content h1 {
+            font-size: 2.2rem;
             margin-bottom: 1rem;
+            color: var(--text-primary);
+            background: linear-gradient(45deg, var(--primary-color), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .thank-you-container p {
-            font-size: 1.2rem;
-            max-width: 600px;
+        .thank-you-content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
             margin-bottom: 2rem;
         }
         
-        @keyframes pulse {
+        .thank-you-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .thank-you-actions .btn {
+            min-width: 150px;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes bounceIn {
             0% {
-                transform: scale(1);
+                opacity: 0;
+                transform: scale(0.3);
             }
             50% {
+                opacity: 1;
                 transform: scale(1.1);
             }
+            70% {
+                transform: scale(0.9);
+            }
             100% {
+                opacity: 1;
                 transform: scale(1);
+            }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .thank-you-content {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+            
+            .thank-you-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .thank-you-content p {
+                font-size: 1rem;
+            }
+            
+            .thank-you-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .thank-you-actions .btn {
+                width: 100%;
+                max-width: 250px;
             }
         }
     </style>
 </head>
 <body>
     <div class="thank-you-container">
-        <div class="thank-you-icon">
-            <i class="fas fa-check-circle"></i>
+        <div class="thank-you-content">
+            <div class="thank-you-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <h1>Message Sent Successfully!</h1>
+            <p>Thank you for reaching out! Your message has been delivered successfully. I appreciate your interest and will get back to you within 24-48 hours.</p>
+            <div class="thank-you-actions">
+                <a href="index.html" class="btn primary">
+                    <i class="fas fa-home"></i> Back to Portfolio
+                </a>
+                <a href="index.html#projects" class="btn secondary">
+                    <i class="fas fa-folder-open"></i> View Projects
+                </a>
+            </div>
         </div>
-        <h1>Thank You!</h1>
-        <p>Your message has been sent successfully. I'll get back to you as soon as possible.</p>
-        <a href="index.html" class="btn primary">Back to Homepage</a>
     </div>
-    
+
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        // Check if the page is in dark mode and apply the appropriate theme
+        // Initialize theme from localStorage
+        const storedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', storedTheme);
+        
+        // Add some interactive animations
         document.addEventListener('DOMContentLoaded', function() {
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme === 'dark') {
-                document.body.classList.add('dark-theme');
-            }
+            // Animate the icon with a delay
+            gsap.to('.thank-you-icon', {
+                rotation: 360,
+                duration: 2,
+                ease: 'power2.inOut',
+                delay: 0.5
+            });
+            
+            // Add hover animations to buttons
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    gsap.to(btn, {
+                        scale: 1.05,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        scale: 1,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+            });
         });
     </script>
 </body>
