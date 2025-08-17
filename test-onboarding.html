@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        
+        .test-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .test-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: #0fbcf9;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Onboarding Test Page</h1>
+    <p>This page tests if GSAP and basic onboarding elements work.</p>
+    
+    <div class="test-overlay" id="testOverlay">
+        <div class="test-box">
+            <div class="logo" id="testLogo">ND</div>
+            <h2>Test Onboarding</h2>
+            <p>If you see this, the overlay works!</p>
+            <button onclick="testAnimation()">Test Animation</button>
+            <button onclick="hideOverlay()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        console.log('Test page loaded');
+        console.log('GSAP available:', typeof gsap !== 'undefined');
+        
+        function testAnimation() {
+            console.log('Testing animation...');
+            const logo = document.getElementById('testLogo');
+            
+            gsap.to(logo, {
+                duration: 0.5,
+                y: -10,
+                ease: "power2.inOut",
+                repeat: 3,
+                yoyo: true,
+                onComplete: () => {
+                    console.log('Animation completed');
+                    alert('Animation test completed!');
+                }
+            });
+        }
+        
+        function hideOverlay() {
+            const overlay = document.getElementById('testOverlay');
+            gsap.to(overlay, {
+                duration: 0.5,
+                opacity: 0,
+                onComplete: () => {
+                    overlay.style.display = 'none';
+                }
+            });
+        }
+        
+        // Test if everything loads properly
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            console.log('GSAP version:', gsap.version);
+        });
+    </script>
+</body>
+</html>

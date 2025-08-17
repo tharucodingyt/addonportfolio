@@ -9,6 +9,8 @@
     <title>Tharu's | Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP Animation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
@@ -25,7 +27,9 @@
 
     <!-- Navigation -->
     <nav>
-        <div class="logo">ND</div>
+        <div class="logo">
+            <img src="assets/ndlogo.png" alt="ND Logo">
+        </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -44,6 +48,85 @@
         </div>
     </nav>
 
+    <!-- Onboarding Animation -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="bulb" id="lightBulb">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+        <div class="speech-bubble" id="speechBubble">
+            <div class="bubble-arrow"></div>
+            <div class="bubble-content">
+                <h3 id="questionTitle">Welcome!</h3>
+                <p id="questionText">Let me ask you a few quick questions to personalize your experience.</p>
+                <div class="question-options" id="questionOptions">
+                    <!-- Options will be dynamically populated -->
+                </div>
+                <div class="question-navigation">
+                    <div class="question-counter">
+                        <span id="currentQuestion">1</span> / <span id="totalQuestions">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-toggle" id="chatbotToggle">
+            <i class="fas fa-comment-dots"></i>
+            <span class="chatbot-badge" id="chatbotBadge">1</span>
+        </div>
+        
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-info">
+                    <h4>AI Assistant</h4>
+                    <span class="chatbot-status">Online</span>
+                </div>
+                <button class="chatbot-minimize" id="chatbotMinimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Hi! I'm Tharu's AI assistant. I can help you learn more about his work, skills, and projects. What would you like to know?</p>
+                        <span class="message-time">Just now</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <div class="chatbot-suggestions" id="chatbotSuggestions">
+                    <button class="suggestion-btn" data-message="Tell me about Tharu's projects">🚀 Projects</button>
+                    <button class="suggestion-btn" data-message="What are Tharu's technical skills?">💻 Skills</button>
+                    <button class="suggestion-btn" data-message="How can I contact Tharu?">📞 Contact</button>
+                </div>
+                <div class="chatbot-input-container">
+                    <input type="text" id="chatbotInput" placeholder="Type your message..." maxlength="500">
+                    <button id="chatbotSend" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="chatbot-typing" id="chatbotTyping" style="display: none;">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span>AI is typing...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div id="particles-js"></div>
@@ -52,7 +135,7 @@
                 <div class="hero-greeting">
                     <span class="badge">Welcome to my portfolio</span>
                 </div>
-                <h1>I'm <span class="highlight">Niraj Tharu</span></h1>
+                <h1>I'm <span class="highlight">Niraj Dangaura</span></h1>
                 <p class="animated-text">A <span class="typed-text"></span><span class="cursor">&nbsp;</span></p>
                 <p class="subtitle">Crafting elegant digital experiences with clean code and creative solutions. Specializing in building beautiful, functional, and user-centric applications.</p>
                 <div class="hero-cta">
@@ -78,9 +161,9 @@
                 <div class="profile-container">
                     <div class="profile-circle">
                         <div class="animated-gradient"></div>
-                        <div class="profile-content">
+                        <!-- <div class="profile-content"> -->
                             <!-- Removed profile initials and tagline text -->
-                        </div>
+                        <!-- </div> -->
                     </div>
                     <div class="tech-orbit">
                         <div class="tech-icon" style="--i:0"><i class="fab fa-react"></i></div>
@@ -115,7 +198,7 @@
             <div class="about-image-column">
                 <div class="about-image-wrapper">
                     <div class="about-image">
-                        <img src="assets/WhatsApp Image 2025-03-06 at 10.02.27 PM.jpeg" alt="Niraj Tharu">
+                        <img src="assets/WhatsApp Image 2025-03-06 at 10.02.27 PM.jpeg" alt="Niraj Dangaura">
                     </div>
                     <div class="experience-badge">
                         <span class="exp-years">2+</span>
@@ -146,7 +229,7 @@
                         <div class="info-column">
                             <div class="info-item">
                                 <span class="info-label">Name:</span>
-                                <span class="info-value">Niraj Tharu</span>
+                                <span class="info-value">Niraj Dangaura</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Email:</span>
@@ -615,7 +698,7 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2023 Niraj Tharu. All Rights Reserved.</p>
+        <p>&copy; 2023 Niraj Dangaura Tharu. All Rights Reserved.</p>
     </footer>
 
     <!-- GSAP Animation Library -->
@@ -668,5 +751,10 @@
             });
         }
     </script>
+    
+    <!-- GSAP ScrollTo Plugin and Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    <script src="simple-onboarding.js"></script>
+    <script src="chatbot.js"></script>
 </body>
 </html>
