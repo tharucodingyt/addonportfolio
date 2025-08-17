@@ -1,7 +1,7 @@
 // AI Chatbot with OpenRouter API
 class PortfolioChatbot {
     constructor() {
-        this.apiKey = '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';
+        this.apiKey = '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';
         this.apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
         this.model = 'openai/gpt-4o';
         this.isOpen = false;
