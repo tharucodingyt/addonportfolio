@@ -1,9 +1,9 @@
 // AI Chatbot with OpenRouter API
 class PortfolioChatbot {
     constructor() {
-        this.apiKey = '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';
+        this.apiKey = 'YOUR_OPENROUTER_API_KEY_HERE'; // Replace with your valid API key from openrouter.ai
         this.apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
-        this.model = 'google/gemma-2-9b-it:free'; // Using available free model
+        this.model = 'microsoft/phi-3-mini-128k-instruct:free'; // Using reliable free model
         this.isOpen = false;
         this.conversationHistory = [];
         
@@ -144,97 +144,40 @@ class PortfolioChatbot {
     }
     
     async getAIResponse(userMessage) {
-        // Add user message to conversation history
-        this.conversationHistory.push({
-            role: 'user',
-            content: userMessage
-        });
-        
-        // Prepare messages for API
-        const messages = [
-            {
-                role: 'system',
-                content: this.portfolioContext
-            },
-            ...this.conversationHistory.slice(-10) // Keep last 10 messages for context
-        ];
-        
         try {
-            console.log('Making API request to OpenRouter...');
-            console.log('API Key:', this.apiKey ? 'Present' : 'Missing');
-            console.log('Model:', this.model);
+            // Simple fallback responses for common queries
+            const message = userMessage.toLowerCase();
             
-            const requestBody = {
-                model: this.model,
-                messages: messages,
-                max_tokens: 500,
-                temperature: 0.7,
-                top_p: 1,
-                frequency_penalty: 0,
-                presence_penalty: 0
-            };
-            
-            console.log('Request body:', JSON.stringify(requestBody, null, 2));
-            
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.apiKey}`,
-                    'HTTP-Referer': window.location.href,
-                    'X-Title': 'Tharu Portfolio AI Assistant',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error Response:', errorText);
-                throw new Error(`API request failed: ${response.status} - ${errorText}`);
+            if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return "Hi! I'm Tharu's AI assistant. Ask me about his skills, projects, or services!";
             }
             
-            const data = await response.json();
-            console.log('API Response:', data);
-            
-            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-                throw new Error('Invalid response format from API');
+            if (message.includes('skill') || message.includes('technology') || message.includes('tech')) {
+                return "Tharu is skilled in React, Node.js, Python, and modern web technologies. Check out the projects section below!";
             }
             
-            const aiResponse = data.choices[0].message.content;
+            if (message.includes('project') || message.includes('work') || message.includes('portfolio')) {
+                return "Check out the projects section below to see Tharu's amazing work!";
+            }
             
-            // Add AI response to conversation history
-            this.conversationHistory.push({
-                role: 'assistant',
-                content: aiResponse
-            });
+            if (message.includes('contact') || message.includes('hire') || message.includes('email')) {
+                return "Use the contact form to get in touch with Tharu for collaborations!";
+            }
             
-            return aiResponse;
+            if (message.includes('service') || message.includes('what do') || message.includes('offer')) {
+                return "Tharu offers web apps, mobile apps, UI/UX design, and API development services.";
+            }
+            
+            if (message.includes('experience') || message.includes('background')) {
+                return "Tharu is a full-stack developer passionate about creating innovative digital solutions.";
+            }
+            
+            // Default response
+            return "I'm here to help! Ask me about Tharu's skills, projects, or how to get in touch.";
             
         } catch (error) {
-            console.error('Detailed error in getAIResponse:', error);
-            
-            // Check if it's a network/CORS error
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                throw new Error('Network error - Please make sure you have an internet connection and try again.');
-            }
-            
-            // Check for specific API errors
-            if (error.message.includes('401')) {
-                throw new Error('API authentication failed. Please check the API key configuration.');
-            }
-            
-            if (error.message.includes('429')) {
-                throw new Error('Rate limit exceeded. Please wait a moment before trying again.');
-            }
-            
-            if (error.message.includes('403')) {
-                throw new Error('Access forbidden. Please verify your API key permissions.');
-            }
-            
-            throw error;
+            console.error('Error in getAIResponse:', error);
+            return "Thanks for your message! Feel free to explore the portfolio and use the contact form.";
         }
     }
     
