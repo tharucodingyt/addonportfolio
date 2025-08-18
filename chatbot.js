@@ -1,9 +1,10 @@
 // AI Chatbot with OpenRouter API
 class PortfolioChatbot {
     constructor() {
-        this.apiKey = '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';
+        // TODO: Replace with your valid OpenRouter API key
+        this.apiKey = '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';
         this.apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
-        this.model = 'openai/gpt-4o';
+        this.model = 'meta-llama/llama-3.1-8b-instruct:free'; // Using free model
         this.isOpen = false;
         this.conversationHistory = [];
         
@@ -142,7 +143,21 @@ class PortfolioChatbot {
         } catch (error) {
             console.error('Chatbot error:', error);
             this.hideTyping();
-            this.addMessage('Sorry, I\'m having trouble connecting right now. Please try again in a moment!', 'bot');
+            
+            let errorMessage = 'Sorry, I\'m having trouble connecting right now. Please try again in a moment!';
+            
+            // Provide more specific error messages
+            if (error.message.includes('CORS')) {
+                errorMessage = 'There seems to be a connection issue. Please make sure you\'re running this site on a web server (not opening the HTML file directly).';
+            } else if (error.message.includes('API request failed: 401')) {
+                errorMessage = 'Authentication error with the AI service. Please check the API configuration.';
+            } else if (error.message.includes('API request failed: 429')) {
+                errorMessage = 'Too many requests. Please wait a moment before trying again.';
+            } else if (error.message.includes('Network error')) {
+                errorMessage = error.message;
+            }
+            
+            this.addMessage(errorMessage, 'bot');
         }
     }
     
@@ -169,36 +184,62 @@ class PortfolioChatbot {
             ...this.conversationHistory.slice(-10) // Keep last 10 messages for context
         ];
         
-        const response = await fetch(this.apiUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${this.apiKey}`,
-                'HTTP-Referer': window.location.origin,
-                'X-Title': 'Tharu\'s Portfolio',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: this.model,
-                messages: messages,
-                max_tokens: 300,
-                temperature: 0.7
-            })
-        });
-        
-        if (!response.ok) {
-            throw new Error(`API request failed: ${response.status}`);
+        try {
+            console.log('Making API request to OpenRouter...');
+            
+            const response = await fetch(this.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': 'Tharu\'s Portfolio',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: this.model,
+                    messages: messages,
+                    max_tokens: 300,
+                    temperature: 0.7
+                })
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                throw new Error(`API request failed: ${response.status} - ${errorText}`);
+            }
+            
+            const data = await response.json();
+            console.log('API Response:', data);
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid response format from API');
+            }
+            
+            const aiResponse = data.choices[0].message.content;
+            
+            // Add AI response to conversation history
+            this.conversationHistory.push({
+                role: 'assistant',
+                content: aiResponse
+            });
+            
+            return aiResponse;
+            
+        } catch (error) {
+            console.error('Detailed error in getAIResponse:', error);
+            
+            // Check if it's a network/CORS error
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                throw new Error('Network error - this might be a CORS issue. Try running the site on a local server.');
+            }
+            
+            throw error;
         }
-        
-        const data = await response.json();
-        const aiResponse = data.choices[0].message.content;
-        
-        // Add AI response to conversation history
-        this.conversationHistory.push({
-            role: 'assistant',
-            content: aiResponse
-        });
-        
-        return aiResponse;
     }
     
     addMessage(content, type) {
