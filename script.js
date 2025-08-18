@@ -235,16 +235,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize GSAP and ScrollTrigger
     gsap.registerPlugin(ScrollTrigger);
     
-    // Page Loader
-    const loaderWrapper = document.querySelector('.loader-wrapper');
+    // Loading Animation
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    const loadingText = document.getElementById('loadingText');
+    const loadingSubtext = document.getElementById('loadingSubtext');
+    
+    // Array of loading messages
+    const loadingMessages = [
+        { main: "Welcome to my portfolio", sub: "Crafting digital experiences" },
+        { main: "Loading creativity", sub: "Preparing amazing projects" },
+        { main: "Almost ready", sub: "Just a moment more..." }
+    ];
+    
+    let messageIndex = 0;
+    
+    // Change loading text every 1.5 seconds
+    const textInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+        const message = loadingMessages[messageIndex];
+        
+        // Animate text change
+        gsap.to([loadingText, loadingSubtext], {
+            opacity: 0,
+            y: -10,
+            duration: 0.3,
+            onComplete: () => {
+                loadingText.textContent = message.main;
+                loadingSubtext.textContent = message.sub;
+                gsap.to([loadingText, loadingSubtext], {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.3
+                });
+            }
+        });
+    }, 1500);
+    
     window.addEventListener('load', function() {
         setTimeout(() => {
-            loaderWrapper.classList.add('fade-out');
+            clearInterval(textInterval);
+            loadingOverlay.classList.add('fade-out');
             // Enable scrolling
             document.body.style.overflow = 'visible';
             // Play intro animations
             playIntroAnimations();
-        }, 500);
+        }, 4000);
     });
     
     // Disable scrolling until the page is loaded
