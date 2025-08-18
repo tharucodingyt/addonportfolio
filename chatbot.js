@@ -1,46 +1,22 @@
 // AI Chatbot with OpenRouter API
 class PortfolioChatbot {
     constructor() {
-        this.apiKey = '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';
+        this.apiKey = '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';
         this.apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
-        this.model = 'meta-llama/llama-3.1-8b-instruct:free'; // Using free model
+        this.model = 'google/gemma-2-9b-it:free'; // Using available free model
         this.isOpen = false;
         this.conversationHistory = [];
         
         // Portfolio context for the AI
         this.portfolioContext = `
-        You are Tharu's AI assistant on his portfolio website. You are knowledgeable about:
+        You are Tharu's AI assistant. Keep responses very short and simple (1-2 sentences max).
         
-        ABOUT THARU:
-        - Full-stack developer with expertise in web development
-        - Skilled in modern technologies and frameworks
-        - Passionate about creating innovative digital solutions
-        - Available for freelance projects and collaborations
+        About Tharu: Full-stack developer skilled in React, Node.js, Python, and modern web technologies.
+        Services: Web apps, mobile apps, UI/UX design, and API development.
         
-        TECHNICAL SKILLS:
-        - Frontend: HTML5, CSS3, JavaScript, React, Vue.js, Angular
-        - Backend: Node.js, Python, PHP, Express.js
-        - Databases: MySQL, MongoDB, PostgreSQL
-        - Tools: Git, Docker, AWS, Firebase
-        - Design: UI/UX, Figma, Adobe Creative Suite
-        
-        SERVICES:
-        - Web Application Development
-        - Mobile App Development
-        - UI/UX Design
-        - E-commerce Solutions
-        - API Development
-        - Database Design
-        
-        CONTACT INFO:
-        - Available for hire and collaborations
-        - Professional inquiries welcome
-        - Portfolio showcases various projects
-        
-        Keep responses helpful, professional, and focused on Tharu's work and capabilities. 
-        If asked about specific projects, mention that visitors can explore the projects section.
-        For contact inquiries, direct them to the contact section of the portfolio.
-        Be conversational but concise - aim for 1-3 sentences unless more detail is specifically requested.
+        For projects, say "Check out the projects section below!"
+        For contact, say "Use the contact form to get in touch!"
+        Be friendly and helpful but keep it brief.
         `;
         
         this.init();
@@ -185,22 +161,30 @@ class PortfolioChatbot {
         
         try {
             console.log('Making API request to OpenRouter...');
+            console.log('API Key:', this.apiKey ? 'Present' : 'Missing');
+            console.log('Model:', this.model);
+            
+            const requestBody = {
+                model: this.model,
+                messages: messages,
+                max_tokens: 500,
+                temperature: 0.7,
+                top_p: 1,
+                frequency_penalty: 0,
+                presence_penalty: 0
+            };
+            
+            console.log('Request body:', JSON.stringify(requestBody, null, 2));
             
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.apiKey}`,
-                    'HTTP-Referer': window.location.origin,
-                    'X-Title': 'Tharu\'s Portfolio',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'Tharu Portfolio AI Assistant',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    model: this.model,
-                    messages: messages,
-                    max_tokens: 300,
-                    temperature: 0.7
-                })
+                body: JSON.stringify(requestBody)
             });
             
             console.log('Response status:', response.status);
@@ -234,7 +218,20 @@ class PortfolioChatbot {
             
             // Check if it's a network/CORS error
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                throw new Error('Network error - this might be a CORS issue. Try running the site on a local server.');
+                throw new Error('Network error - Please make sure you have an internet connection and try again.');
+            }
+            
+            // Check for specific API errors
+            if (error.message.includes('401')) {
+                throw new Error('API authentication failed. Please check the API key configuration.');
+            }
+            
+            if (error.message.includes('429')) {
+                throw new Error('Rate limit exceeded. Please wait a moment before trying again.');
+            }
+            
+            if (error.message.includes('403')) {
+                throw new Error('Access forbidden. Please verify your API key permissions.');
             }
             
             throw error;
